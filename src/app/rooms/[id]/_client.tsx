@@ -75,19 +75,25 @@ export function RoomClient({
 
   return (
     <div className="container mx-auto max-w-4xl h-screen-with-header border border-y-0 flex flex-col">
-      <div className="flex items-center justify-between gap-2 p-4 border-b bg-background">
-        <div className="min-w-0">
-          <h1 className="truncate text-xl font-semibold sm:text-2xl">
-            {room.name}
-          </h1>
+      <div className="flex items-center justify-between gap-2 border-b border-white/5 bg-background/80 p-4 backdrop-blur-md">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[var(--brand-end)] text-sm font-semibold text-white shadow-[0_6px_16px_-6px_var(--brand-glow)]">
+            {room.name.trim().charAt(0).toUpperCase() || "#"}
+          </div>
 
-          <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <span className="relative flex size-2 shrink-0">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/75" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
-            </span>
-            {connectedUsers} {connectedUsers === 1 ? "user" : "users"} online
-          </p>
+          <div className="min-w-0">
+            <h1 className="truncate text-xl font-semibold sm:text-2xl">
+              {room.name}
+            </h1>
+
+            <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+              <span className="relative flex size-2 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/75" />
+                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              </span>
+              {connectedUsers} {connectedUsers === 1 ? "user" : "users"} online
+            </p>
+          </div>
         </div>
 
         <InviteUserModal roomId={room.id} />
@@ -117,7 +123,10 @@ export function RoomClient({
           {visibleMessages.length === 0 && status !== "loading" ? (
             <Empty className="py-10">
               <EmptyHeader>
-                <EmptyMedia variant="icon">
+                <EmptyMedia
+                  variant="icon"
+                  className="bg-gradient-to-br from-primary to-[var(--brand-end)] text-white"
+                >
                   <MessagesSquareIcon />
                 </EmptyMedia>
 
@@ -132,6 +141,7 @@ export function RoomClient({
               <ChatMessage
                 key={message.id}
                 {...message}
+                isOwnMessage={message.author_id === user.id}
                 ref={index === 0 && status === "idle" ? triggerQueryRef : null}
               />
             ))

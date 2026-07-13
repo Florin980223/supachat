@@ -12,56 +12,84 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("ro-RO", {
 
 type ChatMessageProps = Message & {
   status?: "pending" | "error" | "success"
+  isOwnMessage?: boolean
 }
 
 export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
-  function ChatMessage({ text, author, created_at, status }, ref) {
+  function ChatMessage(
+    { text, author, created_at, status, isOwnMessage = false },
+    ref
+  ) {
+    const bubbleClass =
+      status === "error"
+        ? "bg-destructive/15 text-destructive ring-1 ring-destructive/30"
+        : isOwnMessage
+          ? "bg-gradient-to-br from-primary to-[var(--brand-end)] text-white"
+          : "bg-card text-card-foreground ring-1 ring-foreground/10"
+
     return (
       <div
         ref={ref}
         className={cn(
-          "flex gap-3 rounded-lg mx-2 px-2 py-2 transition-colors hover:bg-accent/50",
-          status === "pending" && "opacity-60",
-          status === "error" && "bg-destructive/10 hover:bg-destructive/10"
+          "flex items-end gap-2 px-3 py-1",
+          isOwnMessage ? "flex-row-reverse" : "flex-row",
+          status === "pending" && "opacity-60"
         )}
       >
-        <div className="shrink-0">
-          {author.image_url != null ? (
-            <Image
-              src={author.image_url}
-              alt={author.name}
-              width={40}
-              height={40}
-              className="rounded-full size-10"
-            />
-          ) : (
-            <div className="size-10 rounded-full flex items-center justify-center border bg-muted text-muted-foreground overflow-hidden">
-              <User2Icon className="size-[30px] mt-2" />
-            </div>
-          )}
-        </div>
-
-        <div className="grow space-y-0.5">
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm font-semibold">{author.name}</span>
-
-            <span className="text-xs text-muted-foreground">
-              {DATE_FORMATTER.format(new Date(created_at))}
-            </span>
-
-            {status === "pending" && (
-              <Loader2Icon className="size-3 animate-spin text-muted-foreground" />
+        {!isOwnMessage && (
+          <div className="shrink-0">
+            {author.image_url != null ? (
+              <Image
+                src={author.image_url}
+                alt={author.name}
+                width={32}
+                height={32}
+                className="size-8 rounded-full"
+              />
+            ) : (
+              <div className="flex size-8 items-center justify-center overflow-hidden rounded-full border bg-muted text-muted-foreground">
+                <User2Icon className="size-5" />
+              </div>
             )}
           </div>
+        )}
 
-          <p className="text-sm wrap-break-word whitespace-pre">{text}</p>
-
-          {status === "error" && (
-            <p className="flex items-center gap-1 text-xs text-destructive">
-              <CircleAlertIcon className="size-3" />
-              Failed to send
-            </p>
+        <div
+          className={cn(
+            "flex max-w-[75%] flex-col gap-0.5 sm:max-w-[65%]",
+            isOwnMessage ? "items-end" : "items-start"
           )}
+        >
+          {!isOwnMessage && (
+            <span className="px-1 text-xs font-medium text-muted-foreground">
+              {author.name}
+            </span>
+          )}
+
+          <div
+            className={cn(
+              "rounded-2xl px-3.5 py-2 text-sm wrap-break-word whitespace-pre",
+              isOwnMessage ? "rounded-br-sm" : "rounded-bl-sm",
+              bubbleClass
+            )}
+          >
+            {text}
+          </div>
+
+          <div className="flex items-center gap-1 px-1 text-[11px] text-muted-foreground">
+            {DATE_FORMATTER.format(new Date(created_at))}
+
+            {status === "pending" && (
+              <Loader2Icon className="size-3 animate-spin" />
+            )}
+
+            {status === "error" && (
+              <span className="flex items-center gap-0.5 text-destructive">
+                <CircleAlertIcon className="size-3" />
+                Failed to send
+              </span>
+            )}
+          </div>
         </div>
       </div>
     )

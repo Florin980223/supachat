@@ -16,6 +16,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { cn } from "@/lib/utils"
 import { getCurrentUser } from "@/services/supabase/lib/getCurrentUser"
 import { createAdminClient } from "@/services/supabase/server"
 import { MessagesSquareIcon } from "lucide-react"
@@ -49,7 +50,10 @@ export default async function Home() {
       <div className="container mx-auto max-w-3xl px-4 sm:px-6 py-8 sm:py-10">
         <Empty className="border border-dashed">
           <EmptyHeader>
-            <EmptyMedia variant="icon">
+            <EmptyMedia
+              variant="icon"
+              className="bg-gradient-to-br from-primary to-[var(--brand-end)] text-white"
+            >
               <MessagesSquareIcon />
             </EmptyMedia>
 
@@ -73,7 +77,7 @@ export default async function Home() {
   return (
     <div className="container mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-10 space-y-10">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h1 className="text-gradient-brand text-2xl font-semibold tracking-tight sm:text-3xl">
           Chat Rooms
         </h1>
         <p className="text-sm text-muted-foreground">
@@ -142,10 +146,10 @@ function RoomCard({
   isJoined: boolean
 }) {
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card className="group/room-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-24px_var(--brand-glow)] hover:ring-primary/40">
       <CardHeader>
         <div className="flex items-center gap-3">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[var(--brand-end)] text-sm font-semibold text-white shadow-[0_4px_12px_-4px_var(--brand-glow)]">
             {name.trim().charAt(0).toUpperCase() || "#"}
           </div>
 
@@ -153,7 +157,14 @@ function RoomCard({
         </div>
 
         <CardDescription>
-          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs">
+          <span
+            className={cn(
+              "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs",
+              isJoined
+                ? "bg-primary/15 text-primary"
+                : "bg-muted text-muted-foreground"
+            )}
+          >
             {memberCount} {memberCount === 1 ? "member" : "members"}
           </span>
         </CardDescription>

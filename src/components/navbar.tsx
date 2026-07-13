@@ -14,14 +14,16 @@ export default function Navbar() {
   const displayName = user?.user_metadata?.preferred_username || user?.email
 
   return (
-    <div className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/80 h-header">
+    <div className="sticky top-0 z-40 border-b border-white/5 bg-background/80 backdrop-blur-md shadow-[0_8px_30px_-24px_var(--brand-glow)] supports-backdrop-filter:bg-background/60 h-header">
       <nav className="container mx-auto max-w-6xl px-4 sm:px-6 flex justify-between items-center h-full gap-4">
         <Link
           href="/"
-          className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl"
+          className="flex items-center gap-2.5 text-lg font-semibold tracking-tight sm:text-xl"
         >
-          <MessagesSquareIcon className="size-5 text-primary" />
-          Supachat
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-[var(--brand-end)] shadow-[0_6px_16px_-6px_var(--brand-glow)]">
+            <MessagesSquareIcon className="size-4 text-white" />
+          </span>
+          <span className="text-gradient-brand">Supachat</span>
         </Link>
 
         {isLoading ? (

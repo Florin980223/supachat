@@ -41,10 +41,14 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn('glow-ring flex flex-col gap-6 rounded-xl', className)} {...props}>
       <Card>
-        <CardHeader className="text-center sm:text-left">
-          <CardTitle className="text-2xl">Welcome!</CardTitle>
+        <CardHeader className="items-center text-center sm:items-start sm:text-left">
+          <div className="mb-1 flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[var(--brand-end)] shadow-[0_8px_20px_-8px_var(--brand-glow)]">
+            <LogInIcon className="size-5 text-white" />
+          </div>
+
+          <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>
         </CardHeader>
         <CardContent>

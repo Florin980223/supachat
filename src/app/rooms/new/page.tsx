@@ -57,8 +57,13 @@ export default function NewRoomPage() {
 
   return (
     <div className="container mx-auto max-w-lg px-4 sm:px-6 py-8 sm:py-10">
-      <Card>
+      <div className="glow-ring rounded-xl">
+        <Card>
         <CardHeader>
+          <div className="mb-1 flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[var(--brand-end)] shadow-[0_8px_20px_-8px_var(--brand-glow)]">
+            <PlusIcon className="size-5 text-white" />
+          </div>
+
           <CardTitle className="text-xl">New Room</CardTitle>
           <CardDescription>Create a new chat room</CardDescription>
         </CardHeader>
@@ -146,7 +151,8 @@ export default function NewRoomPage() {
             </FieldGroup>
           </form>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   )
 }

@@ -74,12 +74,13 @@ export function InviteUserModal({ roomId }: { roomId: string }) {
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="shadow-[0_25px_70px_-24px_var(--brand-glow)] sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <UserPlusIcon className="size-4 text-muted-foreground" />
-              Invite User to Room
-            </DialogTitle>
+            <div className="mb-1 flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[var(--brand-end)] shadow-[0_8px_20px_-8px_var(--brand-glow)]">
+              <UserPlusIcon className="size-4 text-white" />
+            </div>
+
+            <DialogTitle>Invite User to Room</DialogTitle>
             <DialogDescription>
               Enter the user ID of the person you want to invite to this chat
               room.

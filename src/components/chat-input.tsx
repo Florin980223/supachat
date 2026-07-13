@@ -61,8 +61,11 @@ export function ChatInput({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border-t bg-background p-3">
-      <InputGroup className="rounded-2xl">
+    <form
+      onSubmit={handleSubmit}
+      className="border-t border-white/5 bg-background/80 p-3 backdrop-blur-sm"
+    >
+      <InputGroup className="rounded-2xl shadow-sm">
         <InputGroupTextarea
           placeholder="Type your message..."
           value={message}
@@ -81,10 +84,12 @@ export function ChatInput({
             aria-label="Send"
             title="Send"
             size="icon-sm"
+            variant={message.trim() ? "default" : "secondary"}
+            className="rounded-full"
             disabled={isSending || !message.trim()}
           >
             <LoadingSwap isLoading={isSending}>
-              <SendIcon />
+              <SendIcon className="size-4" />
             </LoadingSwap>
           </InputGroupButton>
         </InputGroupAddon>

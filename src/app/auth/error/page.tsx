@@ -15,10 +15,10 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ e
 
   return (
     <div className="flex min-h-screen-with-header w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
+      <div className="glow-ring w-full max-w-sm rounded-xl">
         <Card>
           <CardHeader className="items-center text-center sm:items-start sm:text-left">
-            <div className="mb-1 flex size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+            <div className="mb-1 flex size-11 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
               <TriangleAlertIcon className="size-5" />
             </div>
 

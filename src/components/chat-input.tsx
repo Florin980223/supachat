@@ -6,6 +6,7 @@ import {
   InputGroupButton,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
+import { LoadingSwap } from "@/components/ui/loading-swap"
 import { Message, sendMessage } from "@/services/supabase/actions/messages"
 import { SendIcon } from "lucide-react"
 import { FormEvent, KeyboardEvent, useState } from "react"
@@ -25,6 +26,7 @@ export function ChatInput({
   onErrorSend,
 }: Props) {
   const [message, setMessage] = useState("")
+  const [isSending, setIsSending] = useState(false)
 
   async function handleSubmit(
     e?: FormEvent<HTMLFormElement> | KeyboardEvent<HTMLTextAreaElement>
@@ -33,11 +35,12 @@ export function ChatInput({
 
     const text = message.trim()
 
-    if (!text) return
+    if (!text || isSending) return
 
     const id = crypto.randomUUID()
 
     setMessage("")
+    setIsSending(true)
     onSend({ id, text })
 
     const result = await sendMessage({
@@ -45,6 +48,8 @@ export function ChatInput({
       text,
       roomId,
     })
+
+    setIsSending(false)
 
     if (result.error) {
       toast.error(result.message)
@@ -56,8 +61,8 @@ export function ChatInput({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-3">
-      <InputGroup>
+    <form onSubmit={handleSubmit} className="border-t bg-background p-3">
+      <InputGroup className="rounded-2xl">
         <InputGroupTextarea
           placeholder="Type your message..."
           value={message}
@@ -76,8 +81,11 @@ export function ChatInput({
             aria-label="Send"
             title="Send"
             size="icon-sm"
+            disabled={isSending || !message.trim()}
           >
-            <SendIcon />
+            <LoadingSwap isLoading={isSending}>
+              <SendIcon />
+            </LoadingSwap>
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>

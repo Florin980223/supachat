@@ -46,7 +46,7 @@ export default async function Home() {
 
   if (publicRooms.length === 0 && joinedRooms.length === 0) {
     return (
-      <div className="container mx-auto max-w-3xl px-4 py-8 space-y-8">
+      <div className="container mx-auto max-w-3xl px-4 sm:px-6 py-8 sm:py-10">
         <Empty className="border border-dashed">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -71,10 +71,28 @@ export default async function Home() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
-      <RoomList title="Your Rooms" rooms={joinedRooms} isJoined />
+    <div className="container mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-10 space-y-10">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          Chat Rooms
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Jump back into a room you&apos;ve joined, or discover a new one.
+        </p>
+      </div>
 
-      <RoomList title="Public Rooms" rooms={availablePublicRooms} />
+      <RoomList
+        title="Your Rooms"
+        rooms={joinedRooms}
+        isJoined
+        emptyMessage="You haven't joined any rooms yet."
+      />
+
+      <RoomList
+        title="Public Rooms"
+        rooms={availablePublicRooms}
+        emptyMessage="No public rooms available right now."
+      />
     </div>
   )
 }
@@ -83,26 +101,34 @@ function RoomList({
   title,
   rooms,
   isJoined = false,
+  emptyMessage,
 }: {
   title: string
   rooms: Room[]
   isJoined?: boolean
+  emptyMessage: string
 }) {
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-2xl">{title}</h2>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
 
-        <Button asChild>
+        <Button asChild size="sm" className="self-start sm:self-auto">
           <Link href="/rooms/new">Create Room</Link>
         </Button>
       </div>
 
-      <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
-        {rooms.map((room) => (
-          <RoomCard {...room} key={room.id} isJoined={isJoined} />
-        ))}
-      </div>
+      {rooms.length === 0 ? (
+        <p className="rounded-lg border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
+          {emptyMessage}
+        </p>
+      ) : (
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
+          {rooms.map((room) => (
+            <RoomCard {...room} key={room.id} isJoined={isJoined} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -116,12 +142,20 @@ function RoomCard({
   isJoined: boolean
 }) {
   return (
-    <Card>
+    <Card className="transition-shadow hover:shadow-md">
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
+        <div className="flex items-center gap-3">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+            {name.trim().charAt(0).toUpperCase() || "#"}
+          </div>
+
+          <CardTitle className="truncate">{name}</CardTitle>
+        </div>
 
         <CardDescription>
-          {memberCount} {memberCount === 1 ? "member" : "members"}
+          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs">
+            {memberCount} {memberCount === 1 ? "member" : "members"}
+          </span>
         </CardDescription>
       </CardHeader>
 

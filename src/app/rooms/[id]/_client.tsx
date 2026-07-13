@@ -1,12 +1,20 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { ChatInput } from "@/components/chat-input"
 import { ChatMessage } from "@/components/chat-message"
 import { InviteUserModal } from "@/components/invite-user-modal"
 import { Message } from "@/services/supabase/actions/messages"
 import { createClient } from "@/services/supabase/client"
 import { RealtimeChannel } from "@supabase/supabase-js"
+import { Loader2Icon, MessagesSquareIcon } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 const LIMIT = 25
@@ -66,12 +74,18 @@ export function RoomClient({
     )
 
   return (
-    <div className="container mx-auto h-screen-with-header border border-y-0 flex flex-col">
-      <div className="flex items-center justify-between gap-2 p-4 border-b">
-        <div>
-          <h1 className="text-2xl font-bold">{room.name}</h1>
+    <div className="container mx-auto max-w-4xl h-screen-with-header border border-y-0 flex flex-col">
+      <div className="flex items-center justify-between gap-2 p-4 border-b bg-background">
+        <div className="min-w-0">
+          <h1 className="truncate text-xl font-semibold sm:text-2xl">
+            {room.name}
+          </h1>
 
-          <p className="text-muted-foreground text-sm">
+          <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <span className="relative flex size-2 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500/75" />
+              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+            </span>
             {connectedUsers} {connectedUsers === 1 ? "user" : "users"} online
           </p>
         </div>
@@ -79,39 +93,49 @@ export function RoomClient({
         <InviteUserModal roomId={room.id} />
       </div>
 
-      <div
-        className="grow overflow-y-auto flex flex-col-reverse"
-        style={{
-          scrollbarWidth: "thin",
-          scrollbarColor: "var(--border) transparent",
-        }}
-      >
-        <div>
+      <div className="chat-scroll grow overflow-y-auto flex flex-col-reverse">
+        <div className="py-2">
           {status === "loading" && (
-            <p className="text-center text-sm text-muted-foreground py-2">
+            <p className="flex items-center justify-center gap-2 py-3 text-center text-sm text-muted-foreground">
+              <Loader2Icon className="size-4 animate-spin" />
               Loading more messages...
             </p>
           )}
 
           {status === "error" && (
-            <div className="text-center py-2">
-              <p className="text-sm text-destructive py-2">
+            <div className="flex flex-col items-center gap-2 py-3 text-center">
+              <p className="text-sm text-destructive">
                 Error loading messages...
               </p>
 
-              <Button onClick={loadMoreMessages} variant="outline">
+              <Button onClick={loadMoreMessages} variant="outline" size="sm">
                 Retry
               </Button>
             </div>
           )}
 
-          {visibleMessages.map((message, index) => (
-            <ChatMessage
-              key={message.id}
-              {...message}
-              ref={index === 0 && status === "idle" ? triggerQueryRef : null}
-            />
-          ))}
+          {visibleMessages.length === 0 && status !== "loading" ? (
+            <Empty className="py-10">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <MessagesSquareIcon />
+                </EmptyMedia>
+
+                <EmptyTitle>No messages yet</EmptyTitle>
+                <EmptyDescription>
+                  Say hi to get the conversation started.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          ) : (
+            visibleMessages.map((message, index) => (
+              <ChatMessage
+                key={message.id}
+                {...message}
+                ref={index === 0 && status === "idle" ? triggerQueryRef : null}
+              />
+            ))
+          )}
         </div>
       </div>
 

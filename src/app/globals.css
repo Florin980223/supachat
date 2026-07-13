@@ -130,3 +130,10 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  .chat-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+}

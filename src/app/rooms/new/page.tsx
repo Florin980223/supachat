@@ -17,6 +17,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -25,6 +26,7 @@ import { Input } from "@/components/ui/input"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import { createRoom } from "@/services/supabase/actions/rooms"
 import { createRoomSchema } from "@/services/supabase/schemas/rooms"
+import { PlusIcon } from "lucide-react"
 
 type FormData = z.infer<typeof createRoomSchema>
 
@@ -54,10 +56,10 @@ export default function NewRoomPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8">
+    <div className="container mx-auto max-w-lg px-4 sm:px-6 py-8 sm:py-10">
       <Card>
         <CardHeader>
-          <CardTitle>New Room</CardTitle>
+          <CardTitle className="text-xl">New Room</CardTitle>
           <CardDescription>Create a new chat room</CardDescription>
         </CardHeader>
 
@@ -88,20 +90,26 @@ export default function NewRoomPage() {
                 name="isPublic"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field
-                    orientation="horizontal"
-                    data-invalid={fieldState.invalid}
-                  >
-                    <Checkbox
-                      id={field.name}
-                      checked={field.value}
-                      onCheckedChange={(checked) => {
-                        field.onChange(checked === true)
-                      }}
-                      aria-invalid={fieldState.invalid}
-                    />
+                  <Field data-invalid={fieldState.invalid}>
+                    <Field
+                      orientation="horizontal"
+                      data-invalid={fieldState.invalid}
+                    >
+                      <Checkbox
+                        id={field.name}
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked === true)
+                        }}
+                        aria-invalid={fieldState.invalid}
+                      />
 
-                    <FieldLabel htmlFor={field.name}>Public Room</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>Public Room</FieldLabel>
+                    </Field>
+
+                    <FieldDescription>
+                      Anyone can find and join a public room without an invite.
+                    </FieldDescription>
 
                     {fieldState.error && (
                       <FieldError errors={[fieldState.error]} />
@@ -111,18 +119,22 @@ export default function NewRoomPage() {
               />
 
               {form.formState.errors.root && (
-                <p className="text-sm text-destructive">
+                <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                   {form.formState.errors.root.message}
                 </p>
               )}
 
-              <Field orientation="horizontal" className="w-full">
+              <Field orientation="responsive" className="w-full">
                 <Button
                   type="submit"
                   className="grow"
                   disabled={form.formState.isSubmitting}
                 >
-                  <LoadingSwap isLoading={form.formState.isSubmitting}>
+                  <LoadingSwap
+                    isLoading={form.formState.isSubmitting}
+                    className="flex items-center gap-2"
+                  >
+                    <PlusIcon className="size-4" />
                     Create Room
                   </LoadingSwap>
                 </Button>

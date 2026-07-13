@@ -1,6 +1,6 @@
 import { Message } from "@/services/supabase/actions/messages"
 import { cn } from "@/lib/utils"
-import { User2Icon } from "lucide-react"
+import { CircleAlertIcon, Loader2Icon, User2Icon } from "lucide-react"
 import Image from "next/image"
 import { forwardRef } from "react"
 
@@ -20,9 +20,9 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
       <div
         ref={ref}
         className={cn(
-          "flex gap-4 px-4 py-2 hover:bg-accent/50",
-          status === "pending" && "opacity-50",
-          status === "error" && "bg-destructive/10 text-destructive"
+          "flex gap-3 rounded-lg mx-2 px-2 py-2 transition-colors hover:bg-accent/50",
+          status === "pending" && "opacity-60",
+          status === "error" && "bg-destructive/10 hover:bg-destructive/10"
         )}
       >
         <div className="shrink-0">
@@ -48,9 +48,20 @@ export const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
             <span className="text-xs text-muted-foreground">
               {DATE_FORMATTER.format(new Date(created_at))}
             </span>
+
+            {status === "pending" && (
+              <Loader2Icon className="size-3 animate-spin text-muted-foreground" />
+            )}
           </div>
 
           <p className="text-sm wrap-break-word whitespace-pre">{text}</p>
+
+          {status === "error" && (
+            <p className="flex items-center gap-1 text-xs text-destructive">
+              <CircleAlertIcon className="size-3" />
+              Failed to send
+            </p>
+          )}
         </div>
       </div>
     )

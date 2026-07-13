@@ -1,8 +1,18 @@
 "use client"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { LoadingSwap } from "@/components/ui/loading-swap"
-import { ComponentProps, ReactNode, useTransition } from "react"
+import { ComponentProps, ReactNode, useState, useTransition } from "react"
 
 type ActionResult =
   | {
@@ -26,6 +36,7 @@ export function ActionButton({
   areYouSureDescription?: ReactNode
 }) {
   const [isLoading, startTransition] = useTransition()
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   function performAction() {
     startTransition(async () => {
@@ -38,8 +49,48 @@ export function ActionButton({
   }
 
   return (
-    <Button {...props} disabled={disabled || isLoading} onClick={performAction}>
-      <LoadingSwap isLoading={isLoading}>{children}</LoadingSwap>
-    </Button>
+    <>
+      <Button
+        {...props}
+        disabled={disabled || isLoading}
+        onClick={() => {
+          if (requireAreYouSure) {
+            setConfirmOpen(true)
+            return
+          }
+
+          performAction()
+        }}
+      >
+        <LoadingSwap isLoading={isLoading}>{children}</LoadingSwap>
+      </Button>
+
+      {requireAreYouSure && (
+        <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                {areYouSureDescription ?? "This action cannot be undone."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+              <AlertDialogAction
+                variant="destructive"
+                onClick={() => {
+                  setConfirmOpen(false)
+                  performAction()
+                }}
+              >
+                Confirm
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+    </>
   )
 }

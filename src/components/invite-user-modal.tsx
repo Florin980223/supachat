@@ -5,9 +5,17 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import { addUserToRoom } from "@/services/supabase/actions/rooms"
@@ -61,59 +69,68 @@ export function InviteUserModal({ roomId }: { roomId: string }) {
         variant="outline"
         onClick={() => setOpen(true)}
       >
-        <UserPlusIcon className="w-4 h-4" />
-        Invite User
+        <UserPlusIcon className="size-4" />
+        <span className="hidden sm:inline">Invite User</span>
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Invite User to Room</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <UserPlusIcon className="size-4 text-muted-foreground" />
+              Invite User to Room
+            </DialogTitle>
             <DialogDescription>
               Enter the user ID of the person you want to invite to this chat
               room.
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="user-id" className="text-sm font-medium">
-                User ID
-              </label>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FieldGroup>
+              <Field data-invalid={!!form.formState.errors.userId}>
+                <FieldLabel htmlFor="user-id">User ID</FieldLabel>
 
-              <Input
-                id="user-id"
-                {...form.register("userId")}
-                aria-invalid={!!form.formState.errors.userId}
-              />
+                <Input
+                  id="user-id"
+                  placeholder="e.g. 3f1a9c2e-4b7d-4e2a-9c1a-6d2f8b0e1a2b"
+                  {...form.register("userId")}
+                  aria-invalid={!!form.formState.errors.userId}
+                />
 
-              {form.formState.errors.userId && (
-                <p className="text-sm text-destructive">
-                  {form.formState.errors.userId.message}
-                </p>
-              )}
-            </div>
+                <FieldDescription>
+                  You can find a user&apos;s ID in their Supabase profile.
+                </FieldDescription>
 
-            <div className="flex gap-2">
-              <Button
-                type="submit"
-                className="grow"
-                disabled={form.formState.isSubmitting}
-              >
-                <LoadingSwap isLoading={form.formState.isSubmitting}>
-                  Invite User
-                </LoadingSwap>
-              </Button>
+                {form.formState.errors.userId && (
+                  <FieldError errors={[form.formState.errors.userId]} />
+                )}
+              </Field>
 
-              <Button
-                type="button"
-                variant="outline"
-                disabled={form.formState.isSubmitting}
-                onClick={() => setOpen(false)}
-              >
-                Close
-              </Button>
-            </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={form.formState.isSubmitting}
+                  onClick={() => setOpen(false)}
+                >
+                  Close
+                </Button>
+
+                <Button
+                  type="submit"
+                  disabled={form.formState.isSubmitting}
+                >
+                  <LoadingSwap
+                    isLoading={form.formState.isSubmitting}
+                    className="flex items-center gap-2"
+                  >
+                    <UserPlusIcon className="size-4" />
+                    Invite User
+                  </LoadingSwap>
+                </Button>
+              </DialogFooter>
+            </FieldGroup>
           </form>
         </DialogContent>
       </Dialog>
